@@ -1,11 +1,14 @@
+// 引入全局样式（包括变量和全局mix）
+// 在所有的组件样式开始前，都需要引入全局样式
 @import '../../style/index.less';
+
+// 引入button自己用的mixin,
+@import "./mixin.less";
 
 @btn-prefix-cls: ~'@{tdesign-prefix}-btn';
 
-
 .@{btn-prefix-cls}{
-  position: relative;
-  padding: 5px 10px;
+ .btn();
   &.block-btn {
     width: 100%;
   }
