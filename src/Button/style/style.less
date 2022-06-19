@@ -8,8 +8,15 @@
 @btn-prefix-cls: ~'@{tdesign-prefix}-btn';
 
 .@{btn-prefix-cls}{
- .btn();
-  &.block-btn {
-    width: 100%;
-  }
+  .btn();
+  .btn-default();
+
+//  ?todo 是否需要使用双&
+ &-block {
+  width: 100%;
 }
+}
+
+
+
+

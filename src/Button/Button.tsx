@@ -1,8 +1,10 @@
-import React, { AriaAttributes, ReactNode } from 'react';
+import React, { AriaAttributes, ReactNode, useContext } from 'react';
 // !开发的时候引入该tsx，用于显示样式，发布的时候，组件不会和样式一起发布
 // ? 如何解决？
 import './style/style.less';
 import classNames from 'classnames';
+import { tuple } from '../utils/types';
+import { ConfigContext } from '../config-provider/ConfigContext';
 
 // ! 为了减少组件开发本身的过程中，props提示项太多
 
@@ -15,13 +17,19 @@ type NativeButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, key
 interface BaseButtonProps {
   // 自定义属性
   block?: boolean;
+
   // 支持的事件
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
   children?: ReactNode;
 }
 
-type ButtonProps = Partial<NativeButtonProps & BaseButtonProps>;
+export type ButtonProps = Partial<NativeButtonProps & BaseButtonProps>;
+
+const ButtonTypes = tuple('default', 'primary', 'ghost', 'dashed', 'link', 'text');
+export type ButtonType = typeof ButtonTypes;
+
+const ButtonSize = tuple('default', 'sm', 'lg');
 
 const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
   props,
@@ -29,10 +37,13 @@ const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonPr
 ) => {
   const { block, onClick, className } = props;
 
+  const { getPrefixCls } = useContext(ConfigContext);
+
+  const prefixCls = getPrefixCls('btn');
   const classes = classNames(
-    'tdesign-btn',
+    prefixCls,
     {
-      'block-btn': block,
+      [`${prefixCls}-block`]: block,
     },
     className,
   );
@@ -45,6 +56,7 @@ const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonPr
 
 // 支持 ref的透传
 const Button = React.forwardRef(InternalButton);
+
 // 用于在dev-tools中显示
 Button.displayName = 'Button';
 
