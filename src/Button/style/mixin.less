@@ -39,6 +39,36 @@
   // }
 }
 
+// 传入三个颜色，以及是否是primary，来生成对应样式
+.btn-variant(@text-color;@bg-color;@border-color; @hover-color:@primary-color; @is-primary-btn:'false') {
+  // 带primary的按钮，字体颜色不变，背景和border颜色会加深
+  & when ( @is-primary-btn = 'true') {
+    .button-color(@text-color; @bg-color; @border-color;);
+    // hover和focus的时候，字体颜色边框颜色会变，背景颜色不变
+    &:hover,
+    &:focus {
+      .button-color(@text-color;~`colorPalette('@{bg-color}', 5) `;~`colorPalette('@{border-color}', 5) `);
+    }
+    // active的时候加深颜色
+    &:active {
+      .button-color(@text-color;~`colorPalette('@{bg-color}', 7) `; ~`colorPalette('@{border-color}', 7)`);
+    }
+  }
+  // 非primary的按钮，背景颜色不变，字体和border颜色会变深
+  & when ( @is-primary-btn = 'false') {
+    .button-color(@text-color; @bg-color; @border-color;);
+    // hover和focus的时候，字体颜色边框颜色会变，背景颜色不变
+    &:hover,
+    &:focus {
+      .button-color(~`colorPalette('@{hover-color}', 5) `; @bg-color;~`colorPalette('@{hover-color}', 5) `);
+    }
+    // active的时候加深颜色
+    &:active {
+      .button-color(~`colorPalette('@{hover-color}', 7) `; @bg-color; ~`colorPalette('@{hover-color}', 7)`);
+    }
+  }
+}
+
 // 设置button的基础样式
 .btn {
   position: relative;
@@ -93,32 +123,17 @@
 // hover的时候  边框和字体是primary主题色，背景还是白色
 // focus的时候，白色部分外加深
 .btn-default() {
-  .button-color(@btn-default-color; @btn-default-bg; @btn-default-color;);
-
-  // hover和focus的时候，字体颜色边框颜色会变，背景颜色不变
-
-  &:hover,
-  &:focus {
-    .button-color(~`colorPalette('@{primary-color}', 5) `; @btn-default-bg;~`colorPalette('@{primary-color}', 5) `);
-  }
-  // active的时候加深颜色
-  &:active {
-    .button-color(~`colorPalette('@{primary-color}', 7) `; @btn-default-bg; ~`colorPalette('@{primary-color}', 7)`);
-  }
+  .btn-variant(@btn-default-color; @btn-default-bg; @btn-default-color;);
 }
 
-// primary 按钮
-// 默认状态，字体白色，背景和border都是primary颜色
-// hover的时候  字体白色不变，背景和hover加深
-// focus的时候，白色不变，背景和hover加深
 .btn-primary() {
-  .button-color(@btn-primary-color; @btn-primary-bg; @btn-primary-bg;);
-  &:hover,
-  &:focus {
-    .button-color(@btn-primary-color;  ~`colorPalette('@{btn-primary-bg}', 5)`;  ~`colorPalette('@{btn-primary-bg}', 5)`);
-  }
+  .btn-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-bg; @is-primary-btn:'true');
+}
 
-  &:active {
-    .button-color( @btn-primary-color;  ~`colorPalette('@{btn-primary-bg}', 7)`; ~`colorPalette('@{btn-primary-bg}', 7)`);
-  }
+.btn-danger() {
+  .btn-variant(@btn-danger-bg; @btn-default-bg; @btn-danger-border; @hover-color:@btn-danger-bg);
+}
+
+.btn-danger-primary() {
+  .btn-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border; @is-primary-btn:'true');
 }

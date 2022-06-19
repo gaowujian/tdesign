@@ -33,8 +33,25 @@
   // }
 
   &-primary{
-    // primary颜色mixin
     .btn-primary()
+  }
+  &-danger{
+    .btn-danger()
+  }
+  &-danger-primary{
+    .btn-danger-primary()
+  }
+
+  &-lg {
+    .button-size(
+      @btn-height-lg; @btn-padding-horizontal-lg; @btn-font-size-lg; @btn-border-radius-lg
+    );
+  }
+
+  &-sm {
+    .button-size(
+      @btn-height-sm; @btn-padding-horizontal-sm; @btn-font-size-sm; @btn-border-radius-sm
+    );
   }
 }
 

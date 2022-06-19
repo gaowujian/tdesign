@@ -13,6 +13,12 @@ export default () => {
     <div>
       <Button>默认按钮</Button>
       <Button type="primary">主按钮</Button>
+      <Button size="lg">大按钮</Button>
+      <Button size="sm">小按钮</Button>
+      <Button danger type="primary">
+        primary危险按钮
+      </Button>
+      <Button danger>危险按钮</Button>
     </div>
   );
 };

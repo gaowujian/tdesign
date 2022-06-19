@@ -22,16 +22,18 @@ type NativeButtonProps = Omit<
 
 // 组件自定义属性需要的类型
 //  todo 为什么这种比较好？
-// const ButtonTypes = tuple('default', 'primary', 'ghost', 'dashed', 'link', 'text');
-// export type ButtonType = typeof ButtonTypes[number];
+const ButtonTypes = tuple('default', 'primary', 'ghost', 'dashed', 'link', 'text');
+export type ButtonType = typeof ButtonTypes[number];
 
-export type ButtonType = 'default' | 'primary' | 'ghost' | 'dashed' | 'link' | 'text';
-const ButtonSize = tuple('default', 'sm', 'lg');
+// export type ButtonType = 'default' | 'primary' | 'ghost' | 'dashed' | 'link' | 'text';
+export type ButtonSize = 'lg' | 'sm';
 
 interface BaseButtonProps {
   // 自定义属性
   block?: boolean;
   type?: ButtonType;
+  size?: ButtonSize;
+  danger?: boolean;
   // 支持的事件
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
@@ -45,7 +47,7 @@ const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonPr
   ref,
 ) => {
   // 所有props
-  const { block, type, onClick, className } = props;
+  const { block, type, onClick, className, size, danger } = props;
 
   // 样式相关
   const { getPrefixCls } = useContext(ConfigContext);
@@ -55,6 +57,9 @@ const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonPr
     {
       [`${prefixCls}-block`]: block,
       [`${prefixCls}-${type}`]: type,
+      [`${prefixCls}-${size}`]: size,
+      [`${prefixCls}-danger`]: danger,
+      [`${prefixCls}-danger-primary`]: danger && type === 'primary',
     },
     className,
   );
