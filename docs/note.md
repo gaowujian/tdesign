@@ -22,6 +22,7 @@ type NativeButtonProps = Omit<
 
 - user-select: 元素内容是否能够选中
   - https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
+- focus 是否需要保持 hover 状态的样式也是可以商榷修改的
 - 样式处理顺序
   - 默认样式 => focus 和 hover 状态 => active 状态 => disabled 状态
 
