@@ -1,12 +1,173 @@
-// @import '../../style/mixin.less';
+// 可能会用到全局的mixin
+@import '../../style/mixins/index.less';
+
+// 添加button需要用到mixin，主要是尺寸，和颜色（字体颜色，背景颜色以及边框颜色）
+
+// 尺寸(sm,lg)可能影响的属性: 高度，padding值，字体大小以及圆角
+.button-size(@height; @padding-horizontal; @font-size; @border-radius) {
+  @padding-vertical: max(
+    (round(((@height - @font-size * @line-height-base) / 2) * 10) / 10) - @border-width-base,
+    0
+  );
+  height: @height;
+  padding: @padding-vertical @padding-horizontal;
+  font-size: @font-size;
+  border-radius: @border-radius;
+}
+
+// 颜色 字体颜色，背景颜色和边框颜色
+.button-color(@color; @background; @border) {
+  color: @color;
+  border-color: @border; // a inside Button which only work in Chrome
+  & when not(@background = null) {
+    background: @background;
+  }
+  // http://stackoverflow.com/a/17253457
+  // > a:only-child {
+  //   color: currentcolor;
+
+  //   &::after {
+  //     position: absolute;
+  //     top: 0;
+  //     right: 0;
+  //     bottom: 0;
+  //     left: 0;
+  //     background: transparent;
+  //     content: '';
+  //   }
+  // }
+}
+
+.btn-variant(@color; @background; @border) {
+  // 默认颜色
+  .button-color(@color, @background, @border);
+
+  // hover和focus的时候，字体颜色边框颜色会变，背景颜色不变
+  &:hover,
+  &:focus {
+    .button-color(
+        ~`colorPalette('@{btn-primary-bg}', 5) `; @background;
+          ~`colorPalette('@{btn-primary-bg}', 5) `
+      );
+  }
+  // active的时候加深颜色
+  &:active {
+    .button-color(
+        ~`colorPalette('@{btn-primary-bg}', 7) `; @background;
+          ~`colorPalette('@{btn-primary-bg}', 7) `
+      );
+  }
+}
+
+.btn-variant-primary(@color; @background; @border) {
+  // 默认颜色
+  .button-color(@color, @background, @border);
+
+  // hover和focus的时候，字体颜色边框颜色会变，背景颜色不变
+  &:hover,
+  &:focus {
+    .button-color(
+        ~`colorPalette('@{color}', 5) `; @background;
+          ~`colorPalette('@{color}', 5) `
+      );
+  }
+  // active的时候加深颜色
+  &:active {
+    .button-color(
+        ~`colorPalette('@{color}', 7) `; @background;
+          ~`colorPalette('@{color}', 7) `
+      );
+  }
+}
 
 // 设置button的基础样式
 .btn {
   position: relative;
   display: inline-block;
-  padding: 5px;
-  border-radius: @border-radius;
-  .border-base();
+  font-weight: @btn-font-weight;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  border: @btn-border-width @btn-border-style transparent;
+  box-shadow: @btn-shadow;
+  cursor: pointer;
+  transition: all 0.3s @ease-in-out;
+  // 样式开发，能否选中该元素的文本
+  user-select: none;
+  // todo 之后查询 https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action
+  // touch-action: manipulation;
+
+  // 添加按钮的默认尺寸
+  .button-size(
+    @btn-height-base; @btn-padding-horizontal-base; @font-size-base; @btn-border-radius-base
+  );
+  // 添加默认颜色
+  // .btn-default();
+
+  // &,
+  // &:active,
+  // &:focus {
+  //   outline: 0;
+  // }
+
+  // &:not([disabled]):hover {
+  //   text-decoration: none;
+  // }
+
+  // &:not([disabled]):active {
+  //   outline: 0;
+  //   box-shadow: none;
+  // }
+
+  &[disabled] {
+    cursor: not-allowed;
+
+    > * {
+      pointer-events: none;
+    }
+  }
 }
 
-// 设置button的默认样式
+// type类型决定了btn的颜色相关样式  默认样式 => focus 和 hover 状态 => active 状态 => disabled 状态
+
+.btn-default() {
+  // 默认就是全局的黑色边框和字体，白色背景
+  .button-color(@btn-default-color; @btn-default-bg; @btn-default-color;);
+
+  // hover和focus的时候，字体颜色边框颜色会变，背景颜色不变
+  &:hover,
+  &:focus {
+    .button-color(
+          ~`colorPalette('@{btn-primary-bg}', 5) `; @btn-default-bg;
+            ~`colorPalette('@{btn-primary-bg}', 5) `
+        );
+  }
+  // active的时候加深颜色
+  &:active {
+    .button-color(
+          ~`colorPalette('@{btn-primary-bg}', 7) `; @btn-default-bg;
+            ~`colorPalette('@{btn-primary-bg}', 7) `
+        );
+  }
+}
+
+.btn-primary() {
+  .btn-variant-primary(@btn-primary-color, @btn-primary-bg,@btn-primary-bg);
+
+  // .button-variant-primary(@btn-primary-color; @btn-primary-bg; @primary-color-hover; @primary-color-active);
+  // .button-color(@btn-primary-color, @btn-primary-bg,@btn-primary-bg);
+
+  // &:hover,
+  // &:focus {
+  //   .button-color(
+  //       ~`colorPalette('@{btn-primary-bg}', 5) `; @btn-primary-bg;
+  //         ~`colorPalette('@{btn-primary-bg}', 5) `
+  //     );
+  // }
+  // &:active {
+  //   .button-color(
+  //       ~`colorPalette('@{btn-primary-bg}', 7) `; @btn-primary-bg;
+  //         ~`colorPalette('@{btn-primary-bg}', 7) `
+  //     );
+  // }
+}

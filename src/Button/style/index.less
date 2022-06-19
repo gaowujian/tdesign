@@ -1,0 +1,41 @@
+// 引入全局样式（包括变量和全局mix）
+// 在所有的组件样式开始前，都需要引入全局样式
+// !开发阶段，默认是default主题样式
+@import "../../style/themes/index.less";
+@import '../../style/mixins/index.less';
+
+// 引入button自己用的mixin,
+@import "./mixin.less";
+
+
+//  less的字符串转义语法和变量不同
+// 转义可以保存整个字符串 例如 @res: ~'orientation : landscape';
+// 而变量只能在固定位置出现，不能用 :
+// https://www.geeksforgeeks.org/what-is-the-use-of-escaping-in-less/
+
+@btn-prefix-cls: ~"@{ant-prefix}-btn";
+
+// tdesign-btn
+.@{btn-prefix-cls}{
+  // 默认布局mixin
+  .btn();
+  // *利用mixin绑定在btn上，或者单独创建一个类，方便抽离
+  // .btn-default();
+
+  // 默认的时候会添加一个色彩的class
+  &-default{
+    // 默认颜色mixin
+  .btn-default();
+  }
+
+  // &-block {
+  //   width: 100%;
+  // }
+
+  &-primary{
+    // primary颜色mixin
+    .btn-primary()
+  }
+}
+
+

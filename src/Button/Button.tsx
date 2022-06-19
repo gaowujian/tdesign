@@ -1,7 +1,7 @@
 import React, { AriaAttributes, ReactNode, useContext } from 'react';
 // !开发的时候引入该tsx，用于显示样式，发布的时候，组件不会和样式一起发布
 // ? 如何解决？
-import './style/style.less';
+import './style/index.less';
 import classNames from 'classnames';
 import { tuple } from '../utils/types';
 import { ConfigContext } from '../config-provider/ConfigContext';
@@ -9,15 +9,29 @@ import { ConfigContext } from '../config-provider/ConfigContext';
 // ! 为了减少组件开发本身的过程中，props提示项太多
 
 // * 在domAttributes上本身就有children属性的支持
-type NativeButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof AriaAttributes>;
+//  nativeButtonProps主要用来提供开发的体验，有较好的代码提示，但是需要对相关自定义属性进行删除
+// 例如 组件自定义个type和button的type不一样，button的type 有 'submit' | 'reset' | 'button' | undefined;
+type NativeButtonProps = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  keyof AriaAttributes | 'type'
+>;
 
 // 支持的自定义props
 // * button原生的所有事件名都会暴露出去，但是我们只会对指定的属性和事件名进行逻辑支持
 // * 可能会有部分属性进行覆盖，
+
+// 组件自定义属性需要的类型
+//  todo 为什么这种比较好？
+// const ButtonTypes = tuple('default', 'primary', 'ghost', 'dashed', 'link', 'text');
+// export type ButtonType = typeof ButtonTypes[number];
+
+export type ButtonType = 'default' | 'primary' | 'ghost' | 'dashed' | 'link' | 'text';
+const ButtonSize = tuple('default', 'sm', 'lg');
+
 interface BaseButtonProps {
   // 自定义属性
   block?: boolean;
-
+  type?: ButtonType;
   // 支持的事件
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
@@ -26,24 +40,21 @@ interface BaseButtonProps {
 
 export type ButtonProps = Partial<NativeButtonProps & BaseButtonProps>;
 
-const ButtonTypes = tuple('default', 'primary', 'ghost', 'dashed', 'link', 'text');
-export type ButtonType = typeof ButtonTypes;
-
-const ButtonSize = tuple('default', 'sm', 'lg');
-
 const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
   props,
   ref,
 ) => {
-  const { block, onClick, className } = props;
+  // 所有props
+  const { block, type, onClick, className } = props;
 
+  // 样式相关
   const { getPrefixCls } = useContext(ConfigContext);
-
   const prefixCls = getPrefixCls('btn');
   const classes = classNames(
     prefixCls,
     {
       [`${prefixCls}-block`]: block,
+      [`${prefixCls}-${type}`]: type,
     },
     className,
   );
@@ -59,5 +70,9 @@ const Button = React.forwardRef(InternalButton);
 
 // 用于在dev-tools中显示
 Button.displayName = 'Button';
+
+Button.defaultProps = {
+  type: 'default',
+};
 
 export default Button;

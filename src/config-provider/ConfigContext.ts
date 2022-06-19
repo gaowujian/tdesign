@@ -1,6 +1,6 @@
 import React from 'react';
 
-// 定义默认的样式前缀
+// *定义全局默认的样式前缀
 export const defaultPrefixCls = 'tdesign';
 
 export interface ConfigConsumerProps {
