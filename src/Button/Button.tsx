@@ -1,4 +1,4 @@
-import React, { AriaAttributes, ReactNode, useContext } from 'react';
+import React, { AriaAttributes, MouseEventHandler, ReactNode, useContext } from 'react';
 // !开发的时候引入该tsx，用于显示样式，发布的时候，组件不会和样式一起发布
 // ? 如何解决？
 import './style/index.less';
@@ -21,11 +21,12 @@ export type ButtonType = typeof ButtonTypes[number];
 export type ButtonSize = 'lg' | 'sm';
 
 interface BaseButtonProps {
-  // 自定义属性
+  // 自定义属性，所有的属性不仅携带样式的不同，也会携带逻辑上的不同
   block?: boolean;
   type?: ButtonType;
   size?: ButtonSize;
   danger?: boolean;
+  disabled?: boolean;
   className?: string;
   children?: ReactNode;
   // 支持的事件, 可以支持任意的html标签
@@ -64,11 +65,12 @@ export type ButtonProps = Partial<NativeButtonProps | AnchorButtonProps>;
 // !无法设置一个通用的ref，所以我们暂时先给了一个unknown
 const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (props, ref) => {
   // 提取组件内所用的所有props
-  const { block, type, onClick, className, size, danger } = props;
+  const { block, type, onClick, className, size, danger, disabled, ...rest } = props;
 
   // 样式相关
   const { getPrefixCls } = useContext(ConfigContext);
   const prefixCls = getPrefixCls('btn');
+
   const classes = classNames(
     prefixCls,
     {
@@ -76,10 +78,22 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
       [`${prefixCls}-${type}`]: type,
       [`${prefixCls}-${size}`]: size,
       [`${prefixCls}-danger`]: danger,
-      [`${prefixCls}-danger-primary`]: danger && type === 'primary',
+      // 由于button有自己的默认样式，我们需要通过给携带 href属性的link button添加额外的 类，用于修饰样式
+      [`${prefixCls}-disabled`]: (rest as AnchorButtonProps).href && disabled,
     },
     className,
   );
+
+  // 点击处理函数
+  const handleClick: MouseEventHandler<HTMLElement> = (e) => {
+    if (disabled) {
+      // 阻止button默认行为, 例如 表单的提交和link的跳转
+      e.preventDefault();
+      // 直接返回，不调用函数
+      return;
+    }
+    onClick && onClick(e);
+  };
 
   // !暂时使用as进行强制推断
   const buttonRef = ref as any;
@@ -87,7 +101,13 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
   // 利用if推断出 props类型 Partial<AnchorButtonProps>
   if (type === 'link') {
     return (
-      <a className={classes} onClick={onClick} ref={buttonRef} href={props.href}>
+      <a
+        className={classes}
+        onClick={handleClick}
+        ref={buttonRef}
+        href={props.href}
+        disabled={disabled}
+      >
         {props.children}
       </a>
     );
@@ -100,9 +120,10 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
   return (
     <button
       className={classes}
-      onClick={onClick}
+      onClick={handleClick}
       ref={buttonRef}
       type={(props as NativeButtonProps).htmlType}
+      disabled={disabled}
     >
       {props.children}
     </button>

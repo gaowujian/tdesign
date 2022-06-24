@@ -56,6 +56,7 @@
     &:active {
       .button-color(@text-color;~`colorPalette('@{bg-color}', 7) `; ~`colorPalette('@{border-color}', 7)`);
     }
+    .button-disabled();
   }
   // 非primary的按钮，背景颜色不变，字体和border颜色会变深
   & when ( @is-primary-btn = 'false') {
@@ -68,6 +69,22 @@
     // active的时候加深颜色
     &:active {
       .button-color(~`colorPalette('@{hover-color}', 7) `; @bg-color; ~`colorPalette('@{hover-color}', 7)`);
+    }
+    .button-disabled();
+  }
+}
+
+// 一个按钮disabled的统一样式
+.button-disabled(@color: @btn-disable-color; @background: @btn-disable-bg; @border: @btn-disable-border) {
+  &[disabled] {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      .button-color(@color; @background; @border);
+
+      text-shadow: none;
+      box-shadow: none;
     }
   }
 }

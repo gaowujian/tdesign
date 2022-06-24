@@ -15,12 +15,19 @@
 
 @btn-prefix-cls: ~"@{ant-prefix}-btn";
 
+
 // tdesign-btn
 .@{btn-prefix-cls}{
   // 默认布局mixin
   .btn();
   // *利用mixin绑定在btn上，或者单独创建一个类，方便抽离
   // .btn-default();
+
+  &[disabled],&[disabled]:hover,&[disabled]:active {
+    color: @disabled-color;
+    background: @btn-default-ghost-bg;
+    border-color: @btn-default-border;
+  }
 
   // 默认的时候会添加一个色彩的class
   &-default{
@@ -39,8 +46,27 @@
     .btn-variant(@btn-danger-bg; @btn-default-bg; @btn-danger-border; @hover-color:@btn-danger-bg);
   }
 
-  &-danger-primary {
+  // 利用css的多选择器语法，实现样式的覆盖，减少js中的逻辑
+  &-danger&-primary {
     .btn-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border; @is-primary-btn:'true');
+  }
+
+
+  // 链接按钮
+  &-link {
+    .btn-variant(@link-color, transparent, transparent);
+    box-shadow: none;
+    text-decoration: none;
+    &:hover {
+      background: @btn-link-hover-bg;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: transparent;
+    }
+    .button-disabled(@disabled-color; transparent; transparent);
   }
 
 
@@ -55,6 +81,7 @@
       @btn-height-sm; @btn-padding-horizontal-sm; @btn-font-size-sm; @btn-border-radius-sm
     );
   }
+
 }
 
 
