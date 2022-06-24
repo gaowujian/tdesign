@@ -19,7 +19,8 @@ export default () => {
         primary危险按钮
       </Button>
       <Button danger>危险按钮</Button>
-      <Button htmlType="reset">xxx</Button>
+      <Button htmlType="reset">reset按钮</Button>
+      <Button block>block按钮</Button>
     </div>
   );
 };
