@@ -39,6 +39,9 @@ export default () => {
       <Button onClick={handleClick} disabled>
         disabled按钮
       </Button>
+      <Button onClick={handleClick} type="link" href="www.baidu.com">
+        link按钮
+      </Button>
       <Button onClick={handleClick} type="link" href="www.baidu.com" disabled>
         link按钮
       </Button>

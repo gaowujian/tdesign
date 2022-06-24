@@ -79,7 +79,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
       [`${prefixCls}-${size}`]: size,
       [`${prefixCls}-danger`]: danger,
       // 由于button有自己的默认样式，我们需要通过给携带 href属性的link button添加额外的 类，用于修饰样式
-      [`${prefixCls}-disabled`]: (rest as AnchorButtonProps).href && disabled,
+      // [`${prefixCls}-disabled`]: (rest as AnchorButtonProps).href && disabled,
     },
     className,
   );
@@ -106,6 +106,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
         onClick={handleClick}
         ref={buttonRef}
         href={props.href}
+        // @ts-ignore
         disabled={disabled}
       >
         {props.children}
