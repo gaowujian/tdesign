@@ -1,6 +1,13 @@
 import Menu from './Menu';
-console.log('Menu:', Menu);
-// import { default as MenuItem } from './MenuItem';
+import { default as MenuItem } from './MenuItem';
 
-// Menu.prototype.Item = MenuItem;
-export default Menu;
+type MenuType = typeof Menu & {
+  Item: typeof MenuItem;
+};
+
+// 重新声明类型并添加
+const ExportMenu = Menu as MenuType;
+
+ExportMenu.Item = MenuItem;
+
+export default ExportMenu;

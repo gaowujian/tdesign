@@ -7,6 +7,11 @@ import React from 'react';
 import { Menu } from 'tdesign';
 
 export default () => {
-  return <Menu>112321311</Menu>;
+  return (
+    <Menu>
+      <Menu.Item>1 </Menu.Item>
+      <Menu.Item>2 </Menu.Item>
+    </Menu>
+  );
 };
 ```
