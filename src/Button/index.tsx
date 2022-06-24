@@ -3,7 +3,7 @@ import Button from './Button';
 // import './style.less';
 
 // 导出组件的ts类型
-export { ButtonProps } from './Button';
+export type { ButtonProps } from './Button';
 
 // 导出组件
 export default Button;

@@ -3,12 +3,10 @@
 Demo:
 
 ```tsx
-import React, { useRef } from 'react';
+import React from 'react';
 import { Button } from 'tdesign';
 
 export default () => {
-  const ref = useRef();
-  console.log(ref);
   const handleClick = (e) => {
     console.log('click');
   };
