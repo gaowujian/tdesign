@@ -17,14 +17,32 @@ type NativeButtonProps = Omit<
 ```
 
 - 利用自定义属性提供组件可支持的属性和事件
+- 在做类型推断的时候，如果类型是 A & B, 那么我们赋值的时候可以有良好的提示，本质是类型分发；但是在解构赋值的的时候，我们只能解构公有的属性
+
+  - 通过 discriminated union，也就是 if 语句可以识别出具体的类型，
+
+  ```typescript
+  if (props.type === 'link') {
+  }
+  ```
+
+  - 不过 不能使用 else 进行推断，常用 as 语法，进行认为的类型确定
+
+  ```typescript
+  if (props.type === 'link') {
+    return;
+  }
+  //这里没有类型推断功能
+  props as NativeButtonProps;
+  ```
 
 ### css 样式开发
 
 - user-select: 元素内容是否能够选中
-  - https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
+- https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
 - focus 是否需要保持 hover 状态的样式也是可以商榷修改的
 - 样式处理顺序
-  - 默认样式 => focus 和 hover 状态 => active 状态 => disabled 状态
+- 默认样式 => focus 和 hover 状态 => active 状态 => disabled 状态
 
 ```less
 .btn-variant(@color; @background; @border) {
@@ -35,16 +53,16 @@ type NativeButtonProps = Omit<
   &:hover,
   &:focus {
     .button-color(
-        ~`colorPalette('@{btn-primary-bg}', 5) `; @background;
-          ~`colorPalette('@{btn-primary-bg}', 5) `
-      );
+      ~`colorPalette('@{btn-primary-bg}', 5) `; @background;
+        ~`colorPalette('@{btn-primary-bg}', 5) `
+    );
   }
   // active的时候加深颜色
   &:active {
     .button-color(
-        ~`colorPalette('@{btn-primary-bg}', 7) `; @background;
-          ~`colorPalette('@{btn-primary-bg}', 7) `
-      );
+      ~`colorPalette('@{btn-primary-bg}', 7) `; @background;
+        ~`colorPalette('@{btn-primary-bg}', 7) `
+    );
   }
 }
 ```

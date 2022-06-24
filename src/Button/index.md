@@ -19,6 +19,7 @@ export default () => {
         primary危险按钮
       </Button>
       <Button danger>危险按钮</Button>
+      <Button htmlType="reset">xxx</Button>
     </div>
   );
 };

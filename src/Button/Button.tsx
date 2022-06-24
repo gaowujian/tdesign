@@ -8,14 +8,6 @@ import { ConfigContext } from '../config-provider/ConfigContext';
 
 // ! 为了减少组件开发本身的过程中，props提示项太多
 
-// * 在domAttributes上本身就有children属性的支持
-//  nativeButtonProps主要用来提供开发的体验，有较好的代码提示，但是需要对相关自定义属性进行删除
-// 例如 组件自定义个type和button的type不一样，button的type 有 'submit' | 'reset' | 'button' | undefined;
-type NativeButtonProps = Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  keyof AriaAttributes | 'type'
->;
-
 // 支持的自定义props
 // * button原生的所有事件名都会暴露出去，但是我们只会对指定的属性和事件名进行逻辑支持
 // * 可能会有部分属性进行覆盖，
@@ -34,19 +26,44 @@ interface BaseButtonProps {
   type?: ButtonType;
   size?: ButtonSize;
   danger?: boolean;
-  // 支持的事件
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
   children?: ReactNode;
+  // 支持的事件, 可以支持任意的html标签
+  onClick?: React.MouseEventHandler<HTMLElement>;
 }
 
-export type ButtonProps = Partial<NativeButtonProps & BaseButtonProps>;
+// 我们需要把自定义的冲突属性从react的类型定义中去除
+type ConflictTypes = 'onClick' | 'type' | 'href';
 
-const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
-  props,
-  ref,
-) => {
-  // 所有props
+// * 在domAttributes上本身就有children属性的支持
+//  nativeButtonProps主要用来提供开发的体验，有较好的代码提示，但是需要对相关自定义属性进行删除
+// 例如 组件自定义个type和button的type不一样，button的type 有 'submit' | 'reset' | 'button' | undefined;
+// htmlType 对应原来标签的type类型 React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
+
+// 如果是基于button的㢟，我们需要剔除link，支持设置htmlType
+type NativeButtonProps = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  keyof AriaAttributes | ConflictTypes
+> &
+  BaseButtonProps & {
+    type: Exclude<ButtonType, 'link'>;
+    htmlType?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
+  };
+
+// 链接按钮的type一定是link,并且规定必须有href
+type AnchorButtonProps = BaseButtonProps & {
+  type: 'link';
+  href: string;
+} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof AriaAttributes | ConflictTypes>;
+
+export type ButtonProps = Partial<NativeButtonProps | AnchorButtonProps>;
+
+// 由于ref可能指向button或者指向a，
+// 在a上的ref类型是  React.LegacyRef<HTMLAnchorElement> | undefined
+// 在button上的ref类型是  React.LegacyRef<HTMLButtonElement> | undefined
+// !无法设置一个通用的ref，所以我们暂时先给了一个unknown
+const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (props, ref) => {
+  // 提取组件内所用的所有props
   const { block, type, onClick, className, size, danger } = props;
 
   // 样式相关
@@ -63,8 +80,30 @@ const InternalButton: React.ForwardRefRenderFunction<HTMLButtonElement, ButtonPr
     },
     className,
   );
+
+  // !暂时使用as进行强制推断
+  const buttonRef = ref as any;
+
+  // 利用if推断出 props类型 Partial<AnchorButtonProps>
+  if (type === 'link') {
+    return (
+      <a className={classes} onClick={onClick} ref={buttonRef} href={props.href}>
+        {props.children}
+      </a>
+    );
+  }
+
+  // props
+  // 单独的 props 只能推断出 (parameter) props: ButtonProps
+  // 利用 as 认为推断出 props类型 NativeButtonProps
+
   return (
-    <button className={classes} onClick={onClick} ref={ref}>
+    <button
+      className={classes}
+      onClick={onClick}
+      ref={buttonRef}
+      type={(props as NativeButtonProps).htmlType}
+    >
       {props.children}
     </button>
   );
