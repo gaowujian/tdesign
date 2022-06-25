@@ -26,6 +26,7 @@ interface BaseButtonProps {
   type?: ButtonType;
   size?: ButtonSize;
   danger?: boolean;
+  style?: React.CSSProperties;
   disabled?: boolean;
   className?: string;
   children?: ReactNode;
@@ -65,7 +66,7 @@ export type ButtonProps = Partial<NativeButtonProps | AnchorButtonProps>;
 // !无法设置一个通用的ref，所以我们暂时先给了一个unknown
 const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (props, ref) => {
   // 提取组件内所用的所有props
-  const { block, type, onClick, className, size, danger, disabled, ...rest } = props;
+  const { block, type, onClick, className, size, danger, style, disabled, ...rest } = props;
 
   // 样式相关
   const { getPrefixCls } = useContext(ConfigContext);
@@ -108,6 +109,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
         href={props.href}
         // @ts-ignore
         disabled={disabled}
+        style={style}
       >
         {props.children}
       </a>
@@ -125,6 +127,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
       ref={buttonRef}
       type={(props as NativeButtonProps).htmlType}
       disabled={disabled}
+      style={style}
     >
       {props.children}
     </button>
