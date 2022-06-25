@@ -2,6 +2,11 @@ import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { ConfigContext } from '../config-provider/ConfigContext';
 import './style/index.less';
+import ErrorBoundary from './ErrorBoundary';
+
+export interface AlterInterface extends React.FC<AlertProps> {
+  ErrorBoundary: typeof ErrorBoundary;
+}
 
 export interface AlertProps {
   /** Type of Alert styles, options:`success`, `info`, `warning`, `error` */
@@ -35,7 +40,7 @@ export interface AlertProps {
   onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const Alert: React.FC<AlertProps> = (props) => {
+const Alert: AlterInterface = (props) => {
   const {
     className,
     message,
@@ -98,5 +103,7 @@ const Alert: React.FC<AlertProps> = (props) => {
 Alert.defaultProps = {
   type: 'info',
 };
+
+Alert.ErrorBoundary = ErrorBoundary;
 
 export default Alert;
