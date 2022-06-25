@@ -1,36 +1,37 @@
 // 引入全局样式（包括变量和全局mix）
 // 在所有的组件样式开始前，都需要引入全局样式
 // !开发阶段，默认是default主题样式
-@import "../../style/themes/index.less";
+@import '../../style/themes/index.less';
 @import '../../style/mixins/index.less';
 
 // 引入button自己用的mixin,
-@import "./mixin.less";
-
+@import './mixin.less';
 
 //  less的字符串转义语法和变量不同
 // 转义可以保存整个字符串 例如 @res: ~'orientation : landscape';
 // 而变量只能在固定位置出现，不能用 :
 // https://www.geeksforgeeks.org/what-is-the-use-of-escaping-in-less/
 
-@btn-prefix-cls: ~"@{ant-prefix}-btn";
-
+@btn-prefix-cls: ~'@{ant-prefix}-btn';
 
 // tdesign-btn
-.@{btn-prefix-cls}{
+// .@{btn-prefix-cls}
+.tdesign-btn {
   // 默认布局mixin
   .btn();
   // *利用mixin绑定在btn上，或者单独创建一个类，方便抽离
   // .btn-default();
 
-  &[disabled],&[disabled]:hover,&[disabled]:active {
+  &[disabled],
+  &[disabled]:hover,
+  &[disabled]:active {
     color: @disabled-color;
     background: @btn-default-ghost-bg;
     border-color: @btn-default-border;
   }
 
   // 默认的时候会添加一个色彩的class
-  &-default{
+  &-default {
     // 默认颜色mixin
     .btn-variant(@btn-default-color; @btn-default-bg; @btn-default-color;);
   }
@@ -39,10 +40,10 @@
     width: 100%;
   }
 
-  &-primary{
+  &-primary {
     .btn-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-bg; @is-primary-btn:'true');
   }
-  &-danger{
+  &-danger {
     .btn-variant(@btn-danger-bg; @btn-default-bg; @btn-danger-border; @hover-color:@btn-danger-bg);
   }
 
@@ -50,7 +51,6 @@
   &-danger&-primary {
     .btn-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border; @is-primary-btn:'true');
   }
-
 
   // 链接按钮
   &-link {
@@ -69,7 +69,6 @@
     .button-disabled(@disabled-color; transparent; transparent);
   }
 
-
   &-lg {
     .button-size(
       @btn-height-lg; @btn-padding-horizontal-lg; @btn-font-size-lg; @btn-border-radius-lg
@@ -81,8 +80,4 @@
       @btn-height-sm; @btn-padding-horizontal-sm; @btn-font-size-sm; @btn-border-radius-sm
     );
   }
-
 }
-
-
-

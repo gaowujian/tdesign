@@ -1,0 +1,69 @@
+@import '../../style/themes/index.less';
+@import '../../style/mixins/index.less';
+
+// 引入组件自己的mixin
+@import './mixin.less';
+
+@alert-prefix-cls: ~'@{ant-prefix}-alert';
+
+// 手动填写类名，防止prettier失败
+.tdesign-alert {
+  // 重置样式
+  .reset-component();
+  // 默认样式
+  .alert();
+
+  &-content {
+    flex: 1;
+    min-width: 0;
+  }
+  // 主标题
+  &-message {
+    color: @alert-message-color;
+  }
+  // 副标题
+  &-description {
+    // display: none;
+    font-size: @font-size-base;
+    line-height: @font-size-base + 8px;
+  }
+
+  // alert的不同状态
+  &-success {
+    background-color: @alert-success-bg-color;
+    border: @border-width-base @border-style-base @alert-success-border-color;
+    .@{alert-prefix-cls}-icon {
+      color: @alert-success-icon-color;
+    }
+  }
+
+  &-info {
+    background-color: @alert-info-bg-color;
+    border: @border-width-base @border-style-base @alert-info-border-color;
+    .@{alert-prefix-cls}-icon {
+      color: @alert-info-icon-color;
+    }
+  }
+
+  &-warning {
+    background-color: @alert-warning-bg-color;
+    border: @border-width-base @border-style-base @alert-warning-border-color;
+    .@{alert-prefix-cls}-icon {
+      color: @alert-warning-icon-color;
+    }
+  }
+
+  &-error {
+    background-color: @alert-error-bg-color;
+    border: @border-width-base @border-style-base @alert-error-border-color;
+
+    .@{alert-prefix-cls}-icon {
+      color: @alert-error-icon-color;
+    }
+
+    .@{alert-prefix-cls}-description > pre {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
