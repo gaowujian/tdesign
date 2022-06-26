@@ -1,5 +1,7 @@
 ## Alert 组件开发
 
+### react tsx 写法技巧
+
 1. react-fast-marquee 文字横向轮播库
 2. react-text-loop 文本上下滚动库
 3. 支持传入任意类型的 icon，并统一添加一个 xx-icon 类名，方便统一样式管理
@@ -26,9 +28,35 @@
    };
    ```
 
-### HTML 属性分析
+4. 利用策略模式，使用一个对象来缓存，key-value 的对应关系，使用 React.createElement 方法来手动创建组件
 
-### 类型声明方面
+   ```typescript
+   const iconMapFilled = {
+     success: CheckCircleFilled,
+     info: InfoCircleFilled,
+     error: CloseCircleFilled,
+     warning: ExclamationCircleFilled,
+   };
+   const iconMapOutlined = {
+     success: CheckCircleOutlined,
+     info: InfoCircleOutlined,
+     error: CloseCircleOutlined,
+     warning: ExclamationCircleOutlined,
+   };
+   const iconType = (description ? iconMapOutlined : iconMapFilled)[type!] || null;
+   return React.createElement(iconType, { className: `${prefixCls}-icon` });
+
+   //等价于
+   let element= <InfoCircleFilled/>
+   switch(type){
+      "success":
+        element = <CheckCircleFilled/>
+        break;
+      .....
+   }
+   ```
+
+### ts 类型声明相关
 
 1. 多个组件类型导出的合并方式 Menu 和 MenuItem, Alert 和 ErrorBoundary
 
@@ -63,7 +91,7 @@
       export default CompoundAlert;
       ```
 
-### css 样式开发
+### css 样式编写技巧
 
 1. 重置样式 + 自定义样式，减轻心智负担
 

@@ -1,6 +1,8 @@
 ## button 组件开发
 
-1. 实现了 ref 组件的透传和熟悉相关 react 类型的使用
+### react tsx 写法技巧
+
+1. 利用 React.forwardRef 实现了 ref 组件的透传和熟悉相关 react 类型的使用
 2. 在属性暴露方面，目前是暴露了所有原生+ 支持的属性，但是在实现上，只对显示声明的自定义属性进行了逻辑的支持
 
 ### HTML 属性分析
@@ -9,7 +11,7 @@
 
    - https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled
 
-### 类型声明方面
+### ts 类型声明相关
 
 1. 利用 react 提供的原生组件的完备类型提升开发体验
 
@@ -43,7 +45,7 @@
    props as NativeButtonProps;
    ```
 
-### css 样式开发
+### css 样式开发技巧
 
 1. 我们可以使用 css 的属性选择器来进行样式的修改，避免创建过多额外的类名
 
