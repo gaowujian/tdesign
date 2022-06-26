@@ -112,13 +112,6 @@ const Alert: React.FC<AlertProps> = (props) => {
   // 用于控制动画的撞他
   const [visible, setVisible] = useState(true);
   const ref = React.createRef<HTMLDivElement>();
-  const text = () => {
-    return <div>item1</div>;
-  };
-  const list = [text, <text />, <h1>2132</h1>, 'item2', 21];
-  list.map((item) => {
-    console.log(React.isValidElement(item));
-  });
 
   const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
     setVisible(false);
