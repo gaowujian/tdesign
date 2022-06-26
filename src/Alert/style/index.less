@@ -12,6 +12,10 @@
   .reset-component();
   // 默认样式
   .alert();
+  // 图标样式，和主体内容有间隔
+  &-icon {
+    margin-right: @margin-xs;
+  }
 
   &-content {
     flex: 1;
@@ -20,12 +24,20 @@
   // 主标题
   &-message {
     color: @alert-message-color;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   // 副标题
   &-description {
     // display: none;
     font-size: @font-size-base;
     line-height: @font-size-base + 8px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   // alert的不同状态
@@ -67,6 +79,10 @@
     }
   }
 
+  &-action {
+    margin-left: @margin-xs;
+  }
+
   // 关闭alert的按钮样式
   &-close-icon {
     margin-left: @margin-xs;
@@ -95,5 +111,31 @@
     &:hover {
       color: @alert-close-hover-color;
     }
+  }
+
+  // 消失动画
+  &-exit {
+    opacity: 1;
+    max-height: 200px;
+    overflow: hidden;
+  }
+  &-exit-active {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: none;
+    border-bottom: none;
+    overflow: hidden;
+    transition: all 300ms @ease-base-out;
+  }
+  &-exit-done {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: none;
+    border-bottom: none;
+    overflow: hidden;
   }
 }

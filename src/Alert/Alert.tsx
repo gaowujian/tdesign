@@ -1,10 +1,52 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, ReactElement } from 'react';
 import classNames from 'classnames';
 import { ConfigContext } from '../config-provider/ConfigContext';
+import CheckCircleFilled from '@ant-design/icons/CheckCircleFilled';
+import CheckCircleOutlined from '@ant-design/icons/CheckCircleOutlined';
+import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
+import CloseCircleOutlined from '@ant-design/icons/CloseCircleOutlined';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
-
+import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
+import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
+import InfoCircleFilled from '@ant-design/icons/InfoCircleFilled';
+import InfoCircleOutlined from '@ant-design/icons/InfoCircleOutlined';
+import { replaceElement } from './utils/reactNode';
+import { CSSTransition } from 'react-transition-group';
 import './style/index.less';
 
+const iconMapFilled = {
+  success: CheckCircleFilled,
+  info: InfoCircleFilled,
+  error: CloseCircleFilled,
+  warning: ExclamationCircleFilled,
+};
+
+const iconMapOutlined = {
+  success: CheckCircleOutlined,
+  info: InfoCircleOutlined,
+  error: CloseCircleOutlined,
+  warning: ExclamationCircleOutlined,
+};
+
+interface IconNodeProps {
+  type: AlertProps['type'];
+  icon: AlertProps['icon'];
+  prefixCls: AlertProps['prefixCls'];
+  description: AlertProps['description'];
+}
+
+const IconNode: React.FC<IconNodeProps> = (props) => {
+  const { description, icon, prefixCls, type } = props;
+  const iconType = (description ? iconMapOutlined : iconMapFilled)[type!] || null;
+  if (icon) {
+    return replaceElement(icon, <span className={`${prefixCls}-icon`}>{icon}</span>, () => ({
+      className: classNames(`${prefixCls}-icon`, {
+        [(icon as ReactElement).props.className]: (icon as ReactElement).props.className,
+      }),
+    })) as ReactElement;
+  }
+  return React.createElement(iconType, { className: `${prefixCls}-icon` });
+};
 export interface AlertProps {
   /** Type of Alert styles, options:`success`, `info`, `warning`, `error` */
   type?: 'success' | 'info' | 'warning' | 'error';
@@ -51,6 +93,7 @@ const Alert: React.FC<AlertProps> = (props) => {
     closable,
     closeText,
     closeIcon,
+    showIcon,
   } = props;
   // 样式相关
   const { getPrefixCls } = useContext(ConfigContext);
@@ -66,53 +109,59 @@ const Alert: React.FC<AlertProps> = (props) => {
     className,
   );
 
-  const [closed, setClosed] = useState(false);
+  // 用于控制动画的撞他
+  const [visible, setVisible] = useState(true);
   const ref = React.createRef<HTMLDivElement>();
+  const text = () => {
+    return <div>item1</div>;
+  };
+  const list = [text, <text />, <h1>2132</h1>, 'item2', 21];
+  list.map((item) => {
+    console.log(React.isValidElement(item));
+  });
 
   const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setClosed(true);
+    setVisible(false);
     props.onClose?.(e);
   };
 
   const isClosable = closeText ? true : closable;
 
+  const isShowIcon = banner && showIcon === undefined ? true : showIcon;
+
   return (
-    <div
-      ref={ref}
-      data-show={!closed}
-      className={classes}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onClick={onClick}
-      role="alert"
-      // {...dataOrAriaProps}
-    >
-      {/* {isShowIcon ? (
-        <IconNode description={description} icon={props.icon} prefixCls={prefixCls} type={type} />
-      ) : null} */}
-      <div className={`${prefixCls}-content`}>
-        {message ? <div className={`${prefixCls}-message`}>{message}</div> : null}
-        {description ? <div className={`${prefixCls}-description`}>{description}</div> : null}
+    <CSSTransition in={visible} classNames={prefixCls} timeout={300} unmountOnExit>
+      <div
+        ref={ref}
+        className={classes}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onClick={onClick}
+        role="alert"
+      >
+        {isShowIcon ? (
+          <IconNode description={description} icon={props.icon} prefixCls={prefixCls} type={type} />
+        ) : null}
+        {/* 主体其余 */}
+        <div className={`${prefixCls}-content`}>
+          {message ? <div className={`${prefixCls}-message`}>{message}</div> : null}
+          {description ? <div className={`${prefixCls}-description`}>{description}</div> : null}
+        </div>
+        {/* 额外的操作区域 */}
+        {action ? <div className={`${prefixCls}-action`}>{action}</div> : null}
+        {/* 关闭按钮 */}
+        {isClosable ? (
+          <button
+            type="button"
+            onClick={handleClose}
+            className={`${prefixCls}-close-icon`}
+            tabIndex={0}
+          >
+            {closeText ? <span className={`${prefixCls}-close-text`}>{closeText}</span> : closeIcon}
+          </button>
+        ) : null}
       </div>
-      {action ? <div className={`${prefixCls}-action`}>{action}</div> : null}
-      {/* <CloseIcon
-        isClosable={!!isClosable}
-        closeText={closeText}
-        prefixCls={prefixCls}
-        closeIcon={closeIcon}
-        handleClose={handleClose}
-      /> */}
-      {isClosable ? (
-        <button
-          type="button"
-          onClick={handleClose}
-          className={`${prefixCls}-close-icon`}
-          tabIndex={0}
-        >
-          {closeText ? <span className={`${prefixCls}-close-text`}>{closeText}</span> : closeIcon}
-        </button>
-      ) : null}
-    </div>
+    </CSSTransition>
   );
 };
 
