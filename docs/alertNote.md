@@ -6,47 +6,36 @@
 
 1. 多个组件类型导出的合并方式 Menu 和 MenuItem, Alert 和 ErrorBoundary
 
-   1. 建议类型声明单独放在组件的 index.tsx 中进行管理
+   1. 需要创建一个合成组件的类型
 
-   ```
-    import Alert from './Alert';
-    export type { AlertProps, AlterInterface } from './Alert';
+      - 利用 & 符号，或者 extends 语法
 
-    export default Alert;
+      ```typescript
+      import Alert from './Alert';
+      import ErrorBoundary from './ErrorBoundary';
 
-   ```
+      type AlertType = typeof Alert;
 
-   2. 写法一，使用 extends 语法
+      export interface CompoundAlertType extends AlertType {
+        ErrorBoundary: typeof ErrorBoundary;
+      }
 
-   ```typescript
-   import ErrorBoundary from './ErrorBoundary';
-   interface AlertInterface extends React.FC<AlertProps> {
-     ErrorBoundary: typeof ErrorBoundary;
-   }
+      export type CompoundAlertType = AlertType & {
+        ErrorBoundary: typeof ErrorBoundary;
+      };
+      ```
 
-   const Alert: AlertInterface = (props) => {};
+   2. 在 index.tsx 导出的时候，我们需要导出一个合成组件，而不是一个负责单独功能的组件
 
-   Alert.ErrorBoundary = ErrorBoundary;
-   export default Alert;
-   ```
+      - 利用 as 语法，强制赋值并导出
 
-   3. 写法二，利用 as 强制类型断言
+      ```typescript
+      const CompoundAlert = Alert as CompoundAlertType;
 
-   ```typescript
-   import ErrorBoundary from './ErrorBoundary';
+      CompoundAlert.ErrorBoundary = ErrorBoundary;
 
-   type AlertType = typeof Alert & {
-     ErrorBoundary: typeof ErrorBoundary;
-   };
-
-   const Alert: React.FC<AlertProps> = (props) => {};
-
-   // 重新声明类型并添加 const ExportedAlert = Alert as AlertType;
-
-   ExportedAlert.ErrorBoundary = ErrorBoundary;
-
-   export default ExportedAlert;
-   ```
+      export default CompoundAlert;
+      ```
 
 ### css 样式开发
 

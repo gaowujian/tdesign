@@ -1,6 +1,15 @@
 import Alert from './Alert';
-// !为了按需加载，这里就不会去引入样式了
-// import './style.less';
-export type { AlertProps, AlterInterface } from './Alert';
+import ErrorBoundary from './ErrorBoundary';
 
-export default Alert;
+export type { AlertProps } from './Alert';
+
+type AlertType = typeof Alert;
+export interface CompoundAlertType extends AlertType {
+  ErrorBoundary: typeof ErrorBoundary;
+}
+
+const CompoundAlert = Alert as CompoundAlertType;
+
+CompoundAlert.ErrorBoundary = ErrorBoundary;
+
+export default CompoundAlert;
