@@ -9,6 +9,8 @@ import { Alert } from 'tdesign';
 export default (props) => {
   return (
     <div>
+      <Alert message="我是一个主标题" showIcon />
+
       <Alert message="我是一个主标题" description="我是一个副标题" showIcon />
       <Alert
         message="我是一个主标题"

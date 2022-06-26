@@ -104,6 +104,28 @@
     }
   }
 
+  // 当alert中，存在了描述，那么我们需要从最顶层添加一个类，专门用来控制相关的样式处理
+  &-with-description {
+    align-items: flex-start;
+    padding: @alert-with-description-padding;
+  }
+
+  &-with-description&-no-icon {
+    padding: @alert-with-description-no-icon-padding-vertical 15px;
+  }
+
+  &-with-description &-icon {
+    margin-right: @alert-with-description-padding-vertical;
+    font-size: @alert-with-description-icon-size;
+  }
+
+  &-with-description &-message {
+    display: block;
+    margin-bottom: 4px;
+    color: @alert-message-color;
+    font-size: @font-size-lg;
+  }
+
   &-close-text {
     color: @alert-close-color;
     transition: color 0.3s;

@@ -1,4 +1,4 @@
-import React, { useContext, useState, ReactElement } from 'react';
+import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { ConfigContext } from '../config-provider/ConfigContext';
 import CheckCircleFilled from '@ant-design/icons/CheckCircleFilled';
@@ -10,7 +10,6 @@ import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined';
 import InfoCircleFilled from '@ant-design/icons/InfoCircleFilled';
 import InfoCircleOutlined from '@ant-design/icons/InfoCircleOutlined';
-import { replaceElement } from './utils/reactNode';
 import { CSSTransition } from 'react-transition-group';
 import './style/index.less';
 
@@ -39,11 +38,18 @@ const IconNode: React.FC<IconNodeProps> = (props) => {
   const { description, icon, prefixCls, type } = props;
   const iconType = (description ? iconMapOutlined : iconMapFilled)[type!] || null;
   if (icon) {
-    return replaceElement(icon, <span className={`${prefixCls}-icon`}>{icon}</span>, () => ({
-      className: classNames(`${prefixCls}-icon`, {
-        [(icon as ReactElement).props.className]: (icon as ReactElement).props.className,
-      }),
-    })) as ReactElement;
+    // 如果icon是非法组件，那么我们自己利用span创建一个合法组件，并把icon放进去
+    // 如果icon是合法组件，那么就利用cloneElement做children子元素的劫持，并添加一个类名
+    if (!React.isValidElement(icon)) return <span className={`${prefixCls}-icon`}>{icon}</span>;
+    const generateProps = (props: any) => {
+      return {
+        className: classNames(`${prefixCls}-icon`, {
+          [props.className]: props.className,
+        }),
+      };
+    };
+    const newProps = generateProps(icon.props);
+    return React.cloneElement(icon, newProps);
   }
   return React.createElement(iconType, { className: `${prefixCls}-icon` });
 };
@@ -162,6 +168,7 @@ Alert.defaultProps = {
   type: 'info',
   closable: false,
   closeIcon: <CloseOutlined />,
+  icon: <h1 id="232">were</h1>,
 };
 
 export default Alert;
