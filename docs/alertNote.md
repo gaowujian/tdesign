@@ -82,6 +82,10 @@
 }
 ```
 
-```
-
-```
+2. antd 的 Icon 组件，都是一个 span + svg 进行实现的
+3. 所有可点击的元素都可以看成是一个 button 元素，对一个可点击元素添加样式前，首先需要进行样式重置
+   1. 我们都会考虑 border，outline 来清除边框效果 cursor:pointer 添加可点击标识 padding,margin 重置间隔
+   2. 如果内容是文字，我们会考虑 white-space 文字换行，text-align 文字居中，inline-block 可以设置高度，height,line-height 进行居中,user-select 文本无法选中
+   3. 如果内容其他元素，例如 icon，我们会考虑 内容溢出 overflow:hidden
+4. 样式颜色变会，能提到一个对比比较好的效果
+   1. 次级颜色 fade(@black, 45%); hover 的时候加深一些 fade(@black, 75%);

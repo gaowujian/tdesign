@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { ConfigContext } from '../config-provider/ConfigContext';
+import CloseOutlined from '@ant-design/icons/CloseOutlined';
+
 import './style/index.less';
 
 export interface AlertProps {
@@ -46,6 +48,9 @@ const Alert: React.FC<AlertProps> = (props) => {
     onMouseLeave,
     onClick,
     action,
+    closable,
+    closeText,
+    closeIcon,
   } = props;
   // 样式相关
   const { getPrefixCls } = useContext(ConfigContext);
@@ -64,7 +69,13 @@ const Alert: React.FC<AlertProps> = (props) => {
   const [closed, setClosed] = useState(false);
   const ref = React.createRef<HTMLDivElement>();
 
-  // return <div className={classes}>{message}</div>;
+  const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setClosed(true);
+    props.onClose?.(e);
+  };
+
+  const isClosable = closeText ? true : closable;
+
   return (
     <div
       ref={ref}
@@ -91,12 +102,24 @@ const Alert: React.FC<AlertProps> = (props) => {
         closeIcon={closeIcon}
         handleClose={handleClose}
       /> */}
+      {isClosable ? (
+        <button
+          type="button"
+          onClick={handleClose}
+          className={`${prefixCls}-close-icon`}
+          tabIndex={0}
+        >
+          {closeText ? <span className={`${prefixCls}-close-text`}>{closeText}</span> : closeIcon}
+        </button>
+      ) : null}
     </div>
   );
 };
 
 Alert.defaultProps = {
   type: 'info',
+  closable: false,
+  closeIcon: <CloseOutlined />,
 };
 
 export default Alert;
