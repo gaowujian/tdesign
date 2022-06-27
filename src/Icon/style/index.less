@@ -1,0 +1,21 @@
+@import '../../style/themes/index.less';
+@import '../../style/mixins/index.less';
+
+@alert-prefix-cls: ~'@{ant-prefix}-icon';
+
+.tdesign-icon {
+  display: inline-block;
+
+  &-spin {
+    animation: spin 2500ms linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
