@@ -36,7 +36,7 @@ interface IconNodeProps {
 
 const IconNode: React.FC<IconNodeProps> = (props) => {
   const { description, icon, prefixCls, type } = props;
-  const iconType = (description ? iconMapOutlined : iconMapFilled)[type!] || null;
+  const IconType = (description ? iconMapOutlined : iconMapFilled)[type!] || null;
   if (icon) {
     // 如果icon是非法组件，那么我们自己利用span创建一个合法组件，并把icon放进去
     // 如果icon是合法组件，那么就利用cloneElement做children子元素的劫持，并添加一个类名
@@ -51,7 +51,8 @@ const IconNode: React.FC<IconNodeProps> = (props) => {
     const newProps = generateProps(icon.props);
     return React.cloneElement(icon, newProps);
   }
-  return React.createElement(iconType, { className: `${prefixCls}-icon` });
+  // return <IconType className={`${prefixCls}-icon`} />;
+  return React.createElement(IconType, { className: `${prefixCls}-icon` });
 };
 export interface AlertProps {
   /** Type of Alert styles, options:`success`, `info`, `warning`, `error` */
@@ -89,7 +90,6 @@ const Alert: React.FC<AlertProps> = (props) => {
   const {
     className,
     message,
-    type,
     description,
     banner,
     onMouseEnter,
@@ -100,10 +100,25 @@ const Alert: React.FC<AlertProps> = (props) => {
     closeText,
     closeIcon,
     showIcon,
+    icon,
   } = props;
+
   // 样式相关
   const { getPrefixCls } = useContext(ConfigContext);
   const prefixCls = getPrefixCls('alert');
+
+  // 对于banner类型的alert进行一步优化
+  const getType = () => {
+    const { type } = props;
+    console.log('type:', type);
+    if (type !== undefined) {
+      return type;
+    }
+    // banner 模式默认为警告
+    return banner ? 'warning' : 'info';
+  };
+
+  const type = getType();
 
   const classes = classNames(
     prefixCls,
@@ -139,7 +154,7 @@ const Alert: React.FC<AlertProps> = (props) => {
         role="alert"
       >
         {isShowIcon ? (
-          <IconNode description={description} icon={props.icon} prefixCls={prefixCls} type={type} />
+          <IconNode description={description} icon={icon} prefixCls={prefixCls} type={type} />
         ) : null}
         {/* 主体其余 */}
         <div className={`${prefixCls}-content`}>
@@ -165,10 +180,8 @@ const Alert: React.FC<AlertProps> = (props) => {
 };
 
 Alert.defaultProps = {
-  type: 'info',
   closable: false,
   closeIcon: <CloseOutlined />,
-  icon: <h1 id="232">were</h1>,
 };
 
 export default Alert;

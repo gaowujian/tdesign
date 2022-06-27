@@ -43,17 +43,11 @@
      error: CloseCircleOutlined,
      warning: ExclamationCircleOutlined,
    };
-   const iconType = (description ? iconMapOutlined : iconMapFilled)[type!] || null;
-   return React.createElement(iconType, { className: `${prefixCls}-icon` });
+   const IconType = (description ? iconMapOutlined : iconMapFilled)[type!] || null;
 
-   //等价于
-   let element= <InfoCircleFilled/>
-   switch(type){
-      "success":
-        element = <CheckCircleFilled/>
-        break;
-      .....
-   }
+   return React.createElement(IconType, { className: `${prefixCls}-icon` });
+   <!-- 等价于 -->
+   return <IconType className={`${prefixCls}-icon`} />;
    ```
 
 ### ts 类型声明相关

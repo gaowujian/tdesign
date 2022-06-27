@@ -29,9 +29,12 @@ export default (props) => {
       <Alert
         message="我是一个主标题"
         type="error"
+        icon="icon"
         description="我是一个副标题"
         action="额外的操作区域"
+        showIcon
       />
+      <Alert message="我是一个主标题" banner description="我是一个副标题" />
     </div>
   );
 };
